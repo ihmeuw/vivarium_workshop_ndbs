@@ -5,11 +5,14 @@ components:
             - Mortality()
         disease:
             - SIS('lower_respiratory_infections')
+        risks:
+            - Risk('risk_factor.child_wasting')
         results:
             - ResultsStratifier()
             - DisabilityObserver()
             - MortalityObserver()
             - DiseaseObserver('lower_respiratory_infections')
+            - CategoricalRiskObserver('child_wasting')
 
     # Causes an error if left empty. Uncomment when you have components. 
     # vivarium_workshop_ndbs.components:
