@@ -60,6 +60,10 @@ def get_data(
         data_keys.LRI.EMR: load_emr_from_csmr_and_prevalence,
         data_keys.LRI.CSMR: load_standard_data,
         data_keys.LRI.RESTRICTIONS: load_metadata,
+        data_keys.WASTING.DISTRIBUTION: load_metadata,
+        data_keys.WASTING.ALT_DISTRIBUTION: load_metadata,
+        data_keys.WASTING.CATEGORIES: load_metadata,
+        data_keys.WASTING.EXPOSURE: load_standard_data,
         # TODO - add appropriate mappings
         # data_keys.DIARRHEA.PREVALENCE: load_standard_data,
         # data_keys.DIARRHEA.INCIDENCE_RATE: load_standard_data,
