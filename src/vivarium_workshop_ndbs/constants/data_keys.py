@@ -59,11 +59,34 @@ class __SomeDisease(NamedTuple):
     def log_name(self):
         return "some disease"
 
+class __LowerRespiratoryInfections(NamedTuple):
+
+    # Keys that will be loaded into the artifact. must have a colon type declaration
+    PREVALENCE: TargetString = TargetString('cause.lower_respiratory_infections.prevalence')
+    INCIDENCE_RATE: TargetString = TargetString('cause.lower_respiratory_infections.incidence_rate')
+    REMISSION_RATE: TargetString = TargetString('cause.lower_respiratory_infections.remission_rate')
+    DISABILITY_WEIGHT: TargetString = TargetString('cause.lower_respiratory_infections.disability_weight')
+    EMR: TargetString = TargetString('cause.lower_respiratory_infections.excess_mortality_rate')
+    CSMR: TargetString = TargetString('cause.lower_respiratory_infections.cause_specific_mortality_rate')
+    RESTRICTIONS: TargetString = TargetString('cause.lower_respiratory_infections.restrictions')
+
+    # Useful keys not for the artifact - distinguished by not using the colon type declaration
+
+    @property
+    def name(self):
+        return 'lower_respiratory_infections'
+
+    @property
+    def log_name(self):
+        return 'lower respiratory infections'
+
+
+LRI = __LowerRespiratoryInfections()
 
 SOME_DISEASE = __SomeDisease()
 
 MAKE_ARTIFACT_KEY_GROUPS = [
     POPULATION,
-    # TODO: list all key groups here
-    # SOME_DISEASE
+    # list all key groups here
+    LRI,
 ]

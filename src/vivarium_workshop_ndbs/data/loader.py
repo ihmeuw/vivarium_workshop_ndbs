@@ -53,6 +53,13 @@ def get_data(
         data_keys.POPULATION.DEMOGRAPHY: load_demographic_dimensions,
         data_keys.POPULATION.TMRLE: load_theoretical_minimum_risk_life_expectancy,
         data_keys.POPULATION.ACMR: load_standard_data,
+        data_keys.LRI.PREVALENCE: load_lri_prevalence,
+        data_keys.LRI.INCIDENCE_RATE: load_standard_data,
+        data_keys.LRI.REMISSION_RATE: load_standard_data,
+        data_keys.LRI.DISABILITY_WEIGHT: load_standard_data,
+        data_keys.LRI.EMR: load_emr_from_csmr_and_prevalence,
+        data_keys.LRI.CSMR: load_standard_data,
+        data_keys.LRI.RESTRICTIONS: load_metadata,
         # TODO - add appropriate mappings
         # data_keys.DIARRHEA.PREVALENCE: load_standard_data,
         # data_keys.DIARRHEA.INCIDENCE_RATE: load_standard_data,
@@ -165,7 +172,34 @@ def _load_em_from_meid(location, meid, measure):
 
 
 # TODO - add project-specific data functions here
-
+def load_lri_prevalence(key: str, location: str, years: Optional[Union[int, str, List[int]]] = None) -> pd.DataFrame:
+    if key == data_keys.LRI.PREVALENCE:
+        incidence_rate = get_data(data_keys.LRI.INCIDENCE_RATE, location)
+        early_neonatal_prevalence = (incidence_rate[incidence_rate.index.get_level_values('age_start') == 0.0]
+                                     * 3.5 / 365)
+        all_other_prevalence = (incidence_rate[incidence_rate.index.get_level_values('age_start') != 0.0]
+                                * 7 / 365)
+        prevalence = pd.concat([early_neonatal_prevalence, all_other_prevalence])
+        return prevalence
+    else:
+        raise ValueError(f'Unrecognized key {key}')
+ 
+def load_emr_from_csmr_and_prevalence(
+    key: str, location: Union[str, List[int]], years: Optional[Union[int, str, List[int]]] = None
+) -> pd.DataFrame:
+    try:
+        cause = {
+            data_keys.LRI.EMR: data_keys.LRI,
+        }[key]
+    except KeyError:
+        raise ValueError(f"Unrecognized key {key}")
+ 
+    csmr = get_data(cause.CSMR, location)
+    prevalence = get_data(cause.PREVALENCE, location)
+    data = (csmr / prevalence).fillna(0)
+    data = data.replace([np.inf, -np.inf], 0)
+ 
+    return data
 
 def get_entity(key: Union[str, EntityKey]):
     # Map of entity types to their gbd mappings.
