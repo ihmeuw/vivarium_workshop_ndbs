@@ -48,7 +48,11 @@ configuration:
         default:
             - 'age_group'
             - 'sex'
-            - 'current_year'
+        child_wasting:
+            exclude: ['age_group']
+            include: ['current_year']
+        excluded_categories:
+            child_wasting: ['cat4']
         # disability:
         #     include:
         #     exclude:
